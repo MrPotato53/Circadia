@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-const HomeScreen = () => (
+const ProfileScreen = () => (
     <View>
         <Text>ProfileScreen</Text>
     </View>
