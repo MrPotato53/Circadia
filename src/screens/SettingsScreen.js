@@ -1,6 +1,7 @@
 import { Alert, StyleSheet, View, TextInput, SafeAreaView, Text, Button, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
-import { useState, useRef, useContext } from 'react';
+import { useState, useRef, useContext, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
@@ -21,6 +22,41 @@ const SettingsScreen = () => {
     // Context for sleep and wake times so it's accessible accross screens
     const {sleepWakeTimes, setSleepWakeTimes} = useWakeSleepContext();
 
+    // Load AMPM data
+    useEffect(() => {
+        const loadPMs = async () => {
+            try {
+                const wakePM = await AsyncStorage.getItem("wakePM");
+                const sleepPM = await AsyncStorage.getItem("sleepPM");
+
+                if(wakePM !== null) {setDisplayWakePM(wakePM == "AM" ? false : true)}
+                if(sleepPM !== null) {setDisplaySleepPM(sleepPM == "AM" ? false : true)}
+                console.log(wakePM)
+                console.log(sleepPM)
+            } catch (e) {
+                console.log("Error loading PM data");
+            }
+        }
+
+        loadPMs()
+    }, []);
+
+    const saveWakePM = async () => {
+        try {
+            await AsyncStorage.setItem("wakePM", wakeupIsPM == true ? "PM" : "AM");
+        } catch (e) {
+            console.log("Error saving PM data")
+        }
+    }
+
+    const saveSleepPM = async () => {
+        try {
+            await AsyncStorage.setItem("sleepPM", sleepIsPM == true ? "PM" : "AM");
+        } catch (e) {
+            console.log("Error saving PM data")
+        }
+    }
+
     // Saving wake time to context
     const saveWake = (data) => {
         const hour = parseInt(data['Wake Hour'].toString(), 10);
@@ -31,6 +67,7 @@ const SettingsScreen = () => {
             sleepHour: sleepWakeTimes.sleepHour, 
             sleepMinute: sleepWakeTimes.sleepMinute});
         setDisplayWakePM(wakeupIsPM);
+        saveWakePM()
     }; 
 
     // Saving sleep time to context
@@ -43,7 +80,20 @@ const SettingsScreen = () => {
             sleepHour: hour + (sleepIsPM ? 12 : 0) - (hour == 12 ? 12 : 0), 
             sleepMinute: minute});
         setDisplaySleepPM(sleepIsPM);
+        saveSleepPM();
     };
+
+    useEffect( () => {
+        const setTimes = async () => {
+            try {
+                await AsyncStorage.setItem("setTimes", JSON.stringify(sleepWakeTimes));
+            } catch (e) {
+                console.log("Error when storing data with AsyncStorage");
+            }
+        };
+
+        setTimes();
+    }, [sleepWakeTimes]);
 
     const toggleWakeAMPM = () => setWakeupAMPM(previousState => !previousState);
     const toggleSleepAMPM = () => setSleepAMPM(previousState => !previousState);
