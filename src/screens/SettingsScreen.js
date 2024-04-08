@@ -11,8 +11,8 @@ import {useWakeSleepContext} from '../contexts/WakeSleepTimesContext';
 const SettingsScreen = () => {
 
     // Forms for authentication of hour and minute submissions
-    const {control: controlWake, handleSubmit: handleSubmitWake, reset: resetWake, formState: {wakeErrors}} = useForm();
-    const {control: controlSleep, handleSubmit: handleSubmitSleep, reset: resetSleep, formState: {sleepErrors}} = useForm();
+    const {control: controlWake, handleSubmit: handleSubmitWake, formState: {wakeErrors}} = useForm();
+    const {control: controlSleep, handleSubmit: handleSubmitSleep, formState: {sleepErrors}} = useForm();
 
     const [wakeupIsPM, setWakeupAMPM] = useState(false);
     const [sleepIsPM, setSleepAMPM] = useState(false);
@@ -31,8 +31,6 @@ const SettingsScreen = () => {
 
                 if(wakePM !== null) {setDisplayWakePM(wakePM == "AM" ? false : true)}
                 if(sleepPM !== null) {setDisplaySleepPM(sleepPM == "AM" ? false : true)}
-                console.log(wakePM)
-                console.log(sleepPM)
             } catch (e) {
                 console.log("Error loading PM data");
             }
@@ -45,7 +43,7 @@ const SettingsScreen = () => {
         try {
             await AsyncStorage.setItem("wakePM", wakeupIsPM == true ? "PM" : "AM");
         } catch (e) {
-            console.log("Error saving PM data")
+            console.log("Error saving wake PM data")
         }
     }
 
@@ -53,7 +51,7 @@ const SettingsScreen = () => {
         try {
             await AsyncStorage.setItem("sleepPM", sleepIsPM == true ? "PM" : "AM");
         } catch (e) {
-            console.log("Error saving PM data")
+            console.log("Error saving sleep PM data")
         }
     }
 

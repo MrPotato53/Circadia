@@ -27,9 +27,8 @@ export const WakeSleepTimeContext = ({children}) => {
     getTimes();
   }, []);
 
-  return !isLoading ? 
+  return !isLoading && 
   (<DataContext.Provider value={{ sleepWakeTimes, setSleepWakeTimes }}>
     {children}
-  </DataContext.Provider>) 
-  : null;
+  </DataContext.Provider>)
 }
