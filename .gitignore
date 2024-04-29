@@ -37,3 +37,6 @@ yarn-error.*
 # build stuff
 android/
 ios/
+
+# App JSON
+app.json

@@ -81,6 +81,7 @@ const SettingsScreen = () => {
         saveSleepPM();
     };
 
+    // Save all times to AsyncStorage
     useEffect( () => {
         const setTimes = async () => {
             try {

@@ -8,7 +8,10 @@ import FriendsScreen from './src/screens/FriendsScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
+import LoginScreen from './src/screens/LoginScreen';
 import {WakeSleepTimeContext} from './src/contexts/WakeSleepTimesContext';
+import {UserContext} from './src/contexts/UserContext';
+import { useUserContext } from './src/contexts/UserContext';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,13 +24,34 @@ export const AppNavigator = () => (
   </Tab.Navigator>
 );
 
-const App = () => (
-  <NavigationContainer>
-    <WakeSleepTimeContext>
-      <AppNavigator/>
-    </WakeSleepTimeContext>
-  </NavigationContainer>
-);
+export const AppContent = () => {
+
+  const {user, setUser} = useUserContext();
+
+  return (
+    <>
+      {user != null 
+        ? (
+          <NavigationContainer>
+            <WakeSleepTimeContext>
+              <AppNavigator/>
+            </WakeSleepTimeContext>
+          </NavigationContainer>
+        ) 
+        : <LoginScreen/>
+        }
+      </>
+  )
+}
+
+const App = () => {
+
+  return (
+    <UserContext>
+      <AppContent/>
+    </UserContext>
+  );
+}
 
 export default App;
 
